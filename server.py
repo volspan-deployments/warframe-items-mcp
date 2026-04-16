@@ -54,6 +54,7 @@ async def fetch_all_items(categories: Optional[List[str]], ignore_enemies: bool,
 
 @mcp.tool()
 async def get_items(
+    _track("get_items")
     category: Optional[str] = None,
     ignoreEnemies: bool = True,
     i18n: Optional[str] = None,
@@ -93,6 +94,7 @@ async def get_items(
 @mcp.tool()
 async def find_item(uniqueName: str) -> dict:
     """Look up a single Warframe item by its unique internal name (uniqueName). Returns full details such as stats, components, drop locations, and polarities."""
+    _track("find_item")
     async with httpx.AsyncClient() as client:
         for cat in KNOWN_CATEGORIES:
             items = await fetch_category(cat, client)
@@ -105,6 +107,7 @@ async def find_item(uniqueName: str) -> dict:
 @mcp.tool()
 async def resolve_mods(upgrades: List[dict]) -> dict:
     """Resolve a list of mod or arcane unique names (with optional ranks) into their full item data, separating results into mods and arcanes arrays."""
+    _track("resolve_mods")
     async with httpx.AsyncClient() as client:
         mods_data = await fetch_category("Mods", client)
         arcanes_data = await fetch_category("Arcanes", client)
@@ -147,6 +150,7 @@ async def resolve_mods(upgrades: List[dict]) -> dict:
 @mcp.tool()
 async def parse_color(hex: str) -> dict:
     """Parse a hex color string and find matching Warframe color palette entries."""
+    _track("parse_color")
     hex_clean = hex.lstrip("#").upper()
     if len(hex_clean) not in (3, 6, 8):
         return {"error": "Invalid hex color. Provide a 3, 6, or 8 character hex string.", "hex": hex}
@@ -180,6 +184,7 @@ async def parse_color(hex: str) -> dict:
 @mcp.tool()
 async def map_warframe_colors(colors: str) -> dict:
     """Convert a raw Warframe color configuration object (with slots t0, t1, t2, t3, m0, m1, en, en1) into a structured ColorMap with named slots."""
+    _track("map_warframe_colors")
     try:
         raw = json.loads(colors)
     except json.JSONDecodeError as e:
@@ -226,6 +231,7 @@ async def map_warframe_colors(colors: str) -> dict:
 
 @mcp.tool()
 async def search_items(
+    _track("search_items")
     query: str,
     category: Optional[str] = None,
     i18n: Optional[str] = None
@@ -284,6 +290,7 @@ async def search_items(
 @mcp.tool()
 async def get_item_categories() -> dict:
     """List all available item categories in the Warframe items dataset."""
+    _track("get_item_categories")
     return {
         "categories": KNOWN_CATEGORIES,
         "count": len(KNOWN_CATEGORIES),
